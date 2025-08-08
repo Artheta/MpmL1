@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Engagement Prediction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #5f72bd 50%, #2dd4bf 75%, #14b8a6 100%);
+        min-height: 100vh;
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #3b82f6, #14b8a6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .input-glow:focus {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        transform: scale(1.02);
+      }
+
+      .slider-glow {
+        background: linear-gradient(90deg, #3b82f6, #14b8a6);
+        height: 8px;
+        border-radius: 4px;
+      }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      input[type="range"]::-webkit-slider-track {
+        background: rgba(255, 255, 255, 0.3);
+        height: 8px;
+        border-radius: 4px;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #3b82f6, #14b8a6);
+        cursor: pointer;
+        border: 3px solid white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+      }
+
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+      }
+
+      .float-animation {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .gradient-button {
+        background: linear-gradient(135deg, #3b82f6, #14b8a6);
+        transition: all 0.3s ease;
+      }
+
+      .gradient-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+      }
+
+      .result-high {
+        background: linear-gradient(135deg, #10b981, #3b82f6);
+      }
+
+      .result-medium {
+        background: linear-gradient(135deg, #f59e0b, #ef4444);
+      }
+
+      .result-low {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+      }
+
+      .probability-bar {
+        background: linear-gradient(90deg, #3b82f6, #14b8a6);
+        transition: width 1s ease-in-out;
+      }
+
+      .card-hover {
+        transition: all 0.3s ease;
+      }
+
+      .card-hover:hover {
+        transform: translateY(-5px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="min-h-screen py-8 px-4">
+      <!-- Header Section -->
+      <div class="text-center mb-12">
+        <h1 class="text-6xl font-bold gradient-text mb-4 float-animation">🚀 Customer Engagement Predictor</h1>
+        <p class="text-xl text-white/80 font-light">Enter customer data to predict their engagement level with advanced AI analytics</p>
+        <div class="w-32 h-1 bg-gradient-to-r from-blue-400 to-teal-400 mx-auto mt-4 rounded-full"></div>
+      </div>
+
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Input Section -->
+        <div class="lg:col-span-1">
+          <div class="glass-card rounded-3xl p-8 card-hover">
+            <h2 class="text-3xl font-bold text-white mb-8 flex items-center">
+              <span class="bg-gradient-to-r from-blue-400 to-teal-400 w-8 h-8 rounded-full mr-3 flex items-center justify-center text-sm">📊</span>
+              Customer Data
+            </h2>
+
+            <form class="space-y-6">
+              <!-- Age Slider -->
+              <div class="space-y-3">
+                <label class="block text-white font-medium"> Age: <span id="ageValue" class="text-teal-300 font-bold text-xl">25</span> </label>
+                <input type="range" id="age" name="Age" min="18" max="70" value="25" class="w-full h-2 rounded-lg cursor-pointer" />
+                <div class="flex justify-between text-xs text-white/60">
+                  <span>18</span>
+                  <span>70</span>
+                </div>
+              </div>
+
+              <!-- Gender -->
+              <div class="space-y-3">
+                <label class="block text-white font-medium">Gender</label>
+                <select id="gender" name="Gender" class="w-full p-3 bg-white/10 border border-white/20 rounded-xl text-white input-glow transition-all focus:outline-none backdrop-blur-md">
+                  <option class="text-gray-800">Female</option>
+                  <option class="text-gray-800">Male</option>
+                </select>
+              </div>
+
+              <!-- Marital Status -->
+              <div class="space-y-3">
+                <label class="block text-white font-medium">Marital Status</label>
+                <select id="marital_status" name="Marital Status" class="w-full p-3 bg-white/10 border border-white/20 rounded-xl text-white input-glow transition-all focus:outline-none backdrop-blur-md">
+                  <option class="text-gray-800">Single</option>
+                  <option class="text-gray-800">Married</option>
+                  <option class="text-gray-800">Prefer not to say</option>
+                </select>
+              </div>
+
+              <!-- Occupation -->
+              <div class="space-y-3">
+                <label class="block text-white font-medium">Occupation</label>
+                <select id="occupation" name="Occupation" class="w-full p-3 bg-white/10 border border-white/20 rounded-xl text-white input-glow transition-all focus:outline-none backdrop-blur-md">
+                  <option class="text-gray-800">Student</option>
+                  <option class="text-gray-800">Employee</option>
+                  <option class="text-gray-800">Self Employed</option>
+                  <option class="text-gray-800">House Wife</option>
+                </select>
+              </div>
+
+              <!-- Monthly Income -->
+              <div class="space-y-3">
+                <label class="block text-white font-medium">Monthly Income</label>
+                <select id="monthly_income" name="Monthly Income" class="w-full p-3 bg-white/10 border border-white/20 rounded-xl text-white input-glow transition-all focus:outline-none backdrop-blur-md">
+                  <option class="text-gray-800">No Income</option>
+                  <option class="text-gray-800">Below Rs.10000</option>
+                  <option class="text-gray-800">10001 to 25000</option>
+                  <option class="text-gray-800">25001 to 50000</option>
+                  <option class="text-gray-800">More than 50000</option>
+                </select>
+              </div>
+
+              <!-- Educational Qualifications -->
+              <div class="space-y-3">
+                <label class="block text-white font-medium">Educational Qualifications</label>
+                <select id="edu_qualifications" name="Educational Qualifications" class="w-full p-3 bg-white/10 border border-white/20 rounded-xl text-white input-glow transition-all focus:outline-none backdrop-blur-md">
+                  <option class="text-gray-800">Graduate</option>
+                  <option class="text-gray-800">Post Graduate</option>
+                  <option class="text-gray-800">Ph.D</option>
+                  <option class="text-gray-800">School</option>
+                  <option class="text-gray-800">Uneducated</option>
+                </select>
+              </div>
+
+              <!-- Family Size -->
+              <div class="space-y-3">
+                <label class="block text-white font-medium"> Family Size: <span id="familySizeValue" class="text-teal-300 font-bold text-xl">3</span> </label>
+                <input type="range" id="family_size" name="Family size" min="1" max="10" value="3" class="w-full h-2 rounded-lg cursor-pointer" />
+                <div class="flex justify-between text-xs text-white/60">
+                  <span>1</span>
+                  <span>10</span>
+                </div>
+              </div>
+
+              <button type="button" id="predictBtn" class="w-full gradient-button text-white font-bold py-4 px-6 rounded-xl text-lg shadow-lg">
+                <span class="flex items-center justify-center">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                  </svg>
+                  Predict Engagement
+                </span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="lg:col-span-2">
+          <div id="resultsCard" class="glass-card rounded-3xl p-8 h-full card-hover hidden">
+            <h2 class="text-3xl font-bold text-white mb-8 flex items-center">
+              <span class="bg-gradient-to-r from-blue-400 to-teal-400 w-8 h-8 rounded-full mr-3 flex items-center justify-center text-sm">🎯</span>
+              Prediction Results
+            </h2>
+
+            <!-- Main Result -->
+            <div id="mainResult" class="text-center p-8 rounded-2xl mb-8 text-white">
+              <p class="text-xl mb-2 opacity-90">Engagement Level:</p>
+              <p id="resultText" class="text-6xl font-bold mb-4">High</p>
+              <p id="resultEmoji" class="text-4xl">🎉</p>
+              <p id="resultDescription" class="text-lg mt-4 opacity-80">Excellent customer engagement potential!</p>
+            </div>
+
+            <!-- Probabilities -->
+            <div class="space-y-6">
+              <h3 class="text-2xl font-bold text-white mb-4">Prediction Probabilities</h3>
+              <div id="probabilityBars" class="space-y-4">
+                <!-- Probability bars will be inserted here -->
+              </div>
+            </div>
+
+            <!-- Additional Insights -->
+            <div class="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10">
+              <h4 class="text-xl font-semibold text-white mb-3">💡 Key Insights</h4>
+              <ul id="insights" class="text-white/80 space-y-2">
+                <!-- Insights will be added dynamically -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Default placeholder -->
+          <div id="placeholder" class="glass-card rounded-3xl p-8 h-full flex items-center justify-center card-hover">
+            <div class="text-center">
+              <div class="text-8xl mb-4 pulse-animation">🔮</div>
+              <p class="text-2xl text-white font-medium mb-2">Ready for Prediction</p>
+              <p class="text-white/60">Fill in the customer data and click "Predict Engagement" to see results</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Slider value updates
+      const ageSlider = document.getElementById("age");
+      const ageValue = document.getElementById("ageValue");
+      ageSlider.oninput = function () {
+        ageValue.textContent = this.value;
+      };
+
+      const familySlider = document.getElementById("family_size");
+      const familyValue = document.getElementById("familySizeValue");
+      familySlider.oninput = function () {
+        familyValue.textContent = this.value;
+      };
+
+      // Mock prediction function
+      function generatePrediction() {
+        const predictions = ["High", "Medium", "Low"];
+        const emojis = ["🎉", "😐", "😟"];
+        const descriptions = ["Excellent customer engagement potential!", "Moderate engagement expected.", "Low engagement likelihood - consider targeted strategies."];
+        const colors = ["result-high", "result-medium", "result-low"];
+
+        // Simulate random prediction
+        const randomIndex = Math.floor(Math.random() * 3);
+        const prediction = predictions[randomIndex];
+
+        // Generate mock probabilities
+        const probabilities = {
+          High: Math.random() * 0.4 + (randomIndex === 0 ? 0.5 : 0.1),
+          Medium: Math.random() * 0.4 + (randomIndex === 1 ? 0.5 : 0.1),
+          Low: Math.random() * 0.4 + (randomIndex === 2 ? 0.5 : 0.1),
+        };
+
+        // Normalize probabilities
+        const total = Object.values(probabilities).reduce((a, b) => a + b, 0);
+        Object.keys(probabilities).forEach((key) => {
+          probabilities[key] = probabilities[key] / total;
+        });
+
+        return {
+          prediction,
+          probabilities,
+          emoji: emojis[randomIndex],
+          description: descriptions[randomIndex],
+          colorClass: colors[randomIndex],
+        };
+      }
+
+      // Predict button handler
+      document.getElementById("predictBtn").addEventListener("click", function () {
+        // Add loading animation
+        this.innerHTML = `
+                <span class="flex items-center justify-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Analyzing...
+                </span>
+            `;
+
+        // Simulate API call delay
+        setTimeout(() => {
+          const result = generatePrediction();
+          displayResults(result);
+
+          // Reset button
+          this.innerHTML = `
+                    <span class="flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                        Predict Again
+                    </span>
+                `;
+        }, 2000);
+      });
+
+      function displayResults(result) {
+        // Hide placeholder and show results
+        document.getElementById("placeholder").style.display = "none";
+        document.getElementById("resultsCard").classList.remove("hidden");
+
+        // Update main result
+        const mainResult = document.getElementById("mainResult");
+        mainResult.className = `text-center p-8 rounded-2xl mb-8 text-white ${result.colorClass}`;
+
+        document.getElementById("resultText").textContent = result.prediction;
+        document.getElementById("resultEmoji").textContent = result.emoji;
+        document.getElementById("resultDescription").textContent = result.description;
+
+        // Update probability bars
+        const probabilityBars = document.getElementById("probabilityBars");
+        probabilityBars.innerHTML = "";
+
+        Object.entries(result.probabilities).forEach(([level, prob]) => {
+          const barHtml = `
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-white font-medium">${level}</span>
+                            <span class="text-white/80">${(prob * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="w-full bg-white/20 rounded-full h-3">
+                            <div class="probability-bar h-3 rounded-full" style="width: ${prob * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+          probabilityBars.innerHTML += barHtml;
+        });
+
+        // Generate insights
+        const insights = document.getElementById("insights");
+        const age = document.getElementById("age").value;
+        const income = document.getElementById("monthly_income").value;
+        const education = document.getElementById("edu_qualifications").value;
+
+        const insightsList = [
+          `Customer age (${age}) falls in the ${age < 30 ? "young" : age < 50 ? "middle-age" : "mature"} demographic`,
+          `${income} income bracket suggests ${income.includes("More than") || income.includes("25001 to 50000") ? "higher" : "moderate"} purchasing power`,
+          `${education} education level indicates ${education === "Ph.D" || education === "Post Graduate" ? "high" : "moderate"} decision-making complexity`,
+        ];
+
+        insights.innerHTML = insightsList.map((insight) => `<li>• ${insight}</li>`).join("");
+      }
+    </script>
+  </body>
+</html>
